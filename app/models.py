@@ -14,9 +14,10 @@ class User(Base):
     __tablename__ = "users"
     
     user_id = Column(Integer,primary_key=True,index=True)
-    first_name = Column(String)
-    last_name = Column(String)
+    first_name = Column(String(64),nullable=False)
+    last_name = Column(String(64))
     email = Column(String(length=256),nullable = False,unique=True)
+    hashed_password = Column(String(512),nullable=False)
     is_active = Column(Boolean,default=False)
     is_verified = Column(Boolean,default=False)
     verification_code = Column(Integer)
