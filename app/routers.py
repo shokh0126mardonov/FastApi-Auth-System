@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,HTTPException
 from typing import Annotated
 from random import randint
 
@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from fastapi_mail import FastMail,MessageSchema
 
-from .schemas import UserCreate
+from .schemas import UserCreate,UserVerify
 from .models import User
 from .database import get_db
 from .config import mail_conf
@@ -56,3 +56,24 @@ async def home(user:UserCreate, db:Annotated[Session,Depends(get_db)]):
     return {
         "message":"succes"
     }
+
+@router.post('/verify')
+async def verify_api(user_verify:UserVerify, db:Annotated[Session,Depends(get_db)]):
+    user = db.query(User).filter(User.email == user_verify.email).first()
+
+    if user:
+        if user.verification_code == user_verify.verification_code:
+
+            user.is_active = True
+            user.is_verified = True
+
+            db.add(user)
+            db.commit()
+
+            return {
+                "message":"succes"
+            }
+        else:
+            raise HTTPException(status_code=400,detail="Siz xato tasdiqlash kodini jonatdingiz")
+    else:
+        raise HTTPException(status_code=400,detail="Bunday user topilmadi")
