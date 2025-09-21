@@ -42,7 +42,7 @@ class Task(Base):
     task_id = Column(Integer,primary_key=True,index=True)
     title = Column(String,nullable=False)
     descreption = Column(Text)
-    user_id = ForeignKey("users.user_id",ondelete="CASCADE")
+    user_id = Column(Integer,ForeignKey("users.user_id",ondelete="CASCADE"))
 
     user = relationship("User",back_populates='tasks')
 

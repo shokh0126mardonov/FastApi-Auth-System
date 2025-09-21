@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_mail import ConnectionConfig
 
 from .database import Base,engine
 from .models import User,Task
